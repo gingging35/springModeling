@@ -23,7 +23,7 @@ class vehicle {
     void startDrive() {
         if (this.fuel >= 10) {
             System.out.println("운행 준비 완료");
-        } else if (this.fuel >= 10) {
+        } else {
             System.out.println("주유 해주세요");
         }
     }
@@ -32,44 +32,58 @@ class vehicle {
     //    속도변경
     void getSpeed(int changeSpeed) {
         if (this.fuel >= 10) {
-            if (this.speed + changeSpeed <= 0) {
-                this.speed = 0;
-                System.out.println("속도: " + changeSpeed);
-                System.out.println("현재속력: " + this.speed);
-            } else {
-                System.out.println("속도: " + changeSpeed);
-                this.speed += changeSpeed;
-                System.out.println("현재속력: " + this.speed);
-                System.out.println("");
-            }
+            System.out.println("현재속력 : " + this.speed);
+            System.out.println("변경할 속도 : " + changeSpeed);
+            this.speed += changeSpeed;
+            System.out.println("변경된 속도 : " + this.speed);
+            System.out.println("");
         } else {
             System.out.println("주유량을 확인해주세요.");
             System.out.println("");
         }
-
     }
 
     //      상태변경
-    void getCondition(String condtion) {
-        System.out.println("상태 :" + condtion);
-        System.out.printf("주유량 = %d\n\n", this.fuel);
+    void changeCondition(String condtion) {
+        if (condtion == "차고지행" || condtion == "운행") {
+            this.condition = condtion;
+            System.out.println("상태 :" + this.condition);
+        } else {
+            System.out.println("상태 표시 오류");
+        }
     }
 
-    //    승객탑승
-    void getPassenger(int passenger) {}
+    //      승객탑승
 
-
-    void getStatus() {}
-
+    void getPassenger(int a) {
+        int sum = 0;
+        sum += a;
+        if (sum > maxPassenger) {
+            this.condition = "운행불가";
+            System.out.println("운행불가");
+            System.out.printf("\t최대 승객 수 초과(%d)\n\n", sum);
+        } else if (this.condition == "운행불가" || this.condition == "차고지행") {
+            this.condition = "운행불가";
+            System.out.println("운행불가");
+            System.out.printf("\t주유량 부족(%d)\n\n", this.fuel);
+        } else {
+            this.condition = "운행";
+            System.out.printf("총 탑승 승객 수: %d\n", sum);
+            System.out.printf("잔여 승객 수: %d\n", maxPassenger - sum);
+            System.out.printf("요금 : %d\n\n", sum * price);
+        }
 
     }
+
+
+
+}
 
 class bus extends vehicle {
     protected int passenger = 0;
     protected String condition = "운행";
     protected int maxPassenger = 30;
     protected int price = 1000;
-
 
     public bus(int num) {
         super(num);
@@ -104,8 +118,9 @@ class bus extends vehicle {
     }
 
 //      승객탑승
-    void getPassenger(int passenger) {
-        this.passenger += passenger;
+
+    void getPassenger(int a) {
+        this.passenger += a;
         if (this.passenger > maxPassenger) {
             this.condition = "운행불가";
             System.out.println("운행불가");
@@ -118,21 +133,20 @@ class bus extends vehicle {
             this.condition = "운행";
             System.out.printf("총 탑승 승객 수: %d\n", this.passenger);
             System.out.printf("잔여 승객 수: %d\n", maxPassenger - this.passenger);
-            System.out.printf("요금 : %d\n\n", this.passenger * price);
+            System.out.printf("요금 : %d\n\n", this.passenger* price);
         }
 
     }
 
-
 }
 
 class taxi extends vehicle {
-//    private String condition;
+    //    private String condition;
 //    private int passenger;
 //    private String destination;
 //    private int distance;
 //    private int getMoney;
-protected String condition = "일반";
+    protected String condition = "일반";
 
     public taxi(int num) {
         super(num);
@@ -142,6 +156,7 @@ protected String condition = "일반";
 //        this.getMoney = getMoney;
 //
     }
+
     void getStatus() {
         System.out.printf("차 번호: %d\n", this.num);
         System.out.printf("상태: %s\n", this.condition);
@@ -199,14 +214,14 @@ public class main {
 
         bus b = new bus(1234);
         b.getStatus();
-        taxi t = new taxi(5678);
+        taxi t = new taxi(567);
 
 //        taxi t = new taxi(1111,100,"일반");
 
 //        t.getPassenger(2, "대구",12);
-        b.fuel = 44;
-
         b.getStatus();
-        t.getStatus();
+        b.getPassenger(2);
+        b.getPassenger(2);
+        b.getPassenger(2);
     }
 }
