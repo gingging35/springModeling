@@ -1,9 +1,10 @@
 class vehicle{
-    private final int num;
-    private String condition;
-    private int passenger;
+    protected final int num;
+    protected String condition;
+    protected int passenger;
+    protected int fuel;
 
-    public vehicle(int num) {
+    public vehicle(int num,int fuel) {
         this.num = num;
         this.condition = condition;
         this.passenger = passenger;
@@ -13,38 +14,56 @@ class vehicle{
 class bus extends vehicle {
     private String condition;
     private int passenger;
-    private int fuel;
+    private int fuel = 100;
 
     public bus(int num, int fuel) {
-        super(num);
-        this.fuel = fuel;
+        super(num,fuel);
         this.condition = condition;
         this.passenger = passenger;
+    }
+
+    void getStatus() {
+        System.out.printf("버스 번호: %d\n",super.num );
+        System.out.printf("상태: %s\n",this.condition);
+        System.out.printf("현재 주유량: %s\n",this.fuel);
+        System.out.printf("승객 수: %d\n\n",this.passenger);
     }
 
     void getPassenger(int passenger) {
         this.passenger += passenger;
         if (this.passenger > 30) {
-            System.out.println("최대 승객 수 초과");
-        } else{
-            System.out.printf("총 탑승 승객 수: %d\n",this.passenger);
-            System.out.printf("잔여 승객 수: %d\n",30-this.passenger);
-            System.out.printf("요금 : %d\n",this.passenger*1000);}
+            this.condition = "운행불가";
+            System.out.println("운행불가");
+            System.out.printf("\t최대 승객 수 초과(%d)\n\n",this.passenger);
+        } else if (this.condition != "운행") {
+            this.condition = "운행불가";
+            System.out.println("운행불가");
+            System.out.printf("\t주유량 부족(%d)\n\n",this.fuel);
+        } else {
+            this.condition = "운행";
+            System.out.printf("총 탑승 승객 수: %d\n", this.passenger);
+            System.out.printf("잔여 승객 수: %d\n", 30 - this.passenger);
+            System.out.printf("요금 : %d\n\n", this.passenger * 1000);
+        }
+
     }
 
     void getCondition(String condtion) {
         System.out.println("상태="+condtion);
-        System.out.printf("주유량= %d\n", this.fuel);
+        System.out.printf("주유량= %d\n\n", this.fuel);
     }
 
     void getFuel(int fuel) {
         this.fuel += fuel;
         if (this.fuel > 100) {
             System.out.println("가득찼습니다.");
-        }else if(this.fuel<=5){
-            System.out.println("주유 필요");
+        }else if(this.fuel<10){
+            this.condition = "차고지행";
+            System.out.println("주유 필요가 필요합니다.");
+            System.out.println("상태: "+this.condition);
+            System.out.printf("주유량= %d\n\n", this.fuel);
         }else
-            System.out.printf("주유량= %d\n", this.fuel);
+            System.out.printf("주유량= %d\n\n", this.fuel);
     }
 
 
@@ -57,10 +76,9 @@ class taxi extends vehicle {
     private String destination;
     private int distance;
     private int getMoney;
-    private int fuel;
 
     public taxi(int num, int fuel, String condtion) {
-        super(num);
+        super(num,fuel);
         this.fuel = fuel;
         this.condition = condition;
         this.passenger = passenger;
@@ -79,14 +97,15 @@ class taxi extends vehicle {
         }
         if (this.passenger > 5) {
             System.out.println("최대 승객 수 초과");
+            this.condition = "운행불가";
         } else{
             System.out.printf("총 탑승 승객 수: %d\n",passenger);
             System.out.printf("잔여 승객 수: %d\n",4-passenger);
             System.out.printf("기본 요금 확인 : %d\n",3000);}
-            System.out.printf("목적지 : %s\n",destination);
-            System.out.printf("목적지까지 거리 : %dkm\n",distance);
-            System.out.printf("지불할 요금 : %d\n",price);
-            System.out.printf("상태 : %s\n","운행중");
+        System.out.printf("목적지 : %s\n",destination);
+        System.out.printf("목적지까지 거리 : %dkm\n",distance);
+        System.out.printf("지불할 요금 : %d\n",price);
+        System.out.printf("상태 : %s\n\n","운행중");
     }
 
     void getFuel(int fuel) {
@@ -95,17 +114,17 @@ class taxi extends vehicle {
             System.out.println("가득찼습니다.");
         }else if(this.fuel<=5){
             System.out.printf("주유량= %d\n", this.fuel);
-            System.out.println("상태 = 운행불가");
-            System.out.printf("누적요금= %d\n", this.getMoney);
+            System.out.printf("누적요금= %d\n\n", this.getMoney);
         }else {
             System.out.printf("주유량= %d\n", this.fuel);
-            System.out.printf("누적요금= %d\n", this.getMoney);
+            System.out.printf("누적요금= %d\n\n", this.getMoney);
+            this.condition = "운행";
         }
     }
 
     void getCondition(String condtion) {
         System.out.println("상태="+condtion);
-        System.out.printf("주유량= %d\n", this.fuel);
+        System.out.printf("주유량= %d\n\n", this.fuel);
     }
 
 
@@ -118,22 +137,14 @@ public class main {
         bus b = new bus(1000,100);
 
         taxi t = new taxi(1111,100,"일반");
-//        t.getPassenger(2,"서울역", 2);
-//        System.out.println("");
-//        t.getPassenger(3,"구디", 12);
-//
-//        System.out.println("");
-//
-//        t.getFuel(-20);
-//        System.out.println("");
-//
-//        t.getFuel(-20);
-//        System.out.println("");
-//        b.getPassenger(2);
-        t.getPassenger(2, "대구",12);
-        t.getFuel(-10);
-        t.getFuel(-70);
 
+//        t.getPassenger(2, "대구",12);
+        b.getStatus();
+        b.getPassenger(2);
+        b.getStatus();
+        b.getFuel(-95);
+        b.getStatus();
+        b.getPassenger(5);
 
     }
 }
