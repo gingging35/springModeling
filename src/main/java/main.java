@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 class vehicle{
     protected final int num;
     protected String condition;
@@ -14,7 +16,9 @@ class vehicle{
 class bus extends vehicle {
     private String condition;
     private int passenger;
-    private int fuel = 100;
+    private int speed = 0;
+    protected int fuel = 100;
+
 
     public bus(int num, int fuel) {
         super(num,fuel);
@@ -26,7 +30,18 @@ class bus extends vehicle {
         System.out.printf("버스 번호: %d\n",super.num );
         System.out.printf("상태: %s\n",this.condition);
         System.out.printf("현재 주유량: %s\n",this.fuel);
+        System.out.printf("현재 속도: %s\n",this.speed);
         System.out.printf("승객 수: %d\n\n",this.passenger);
+    }
+
+    void getSpeed(int speed) {
+        if (this.condition == "운행") {
+            this.speed = speed;
+            System.out.println("현재속력: "+speed);
+        } else {
+            System.out.println("속도입력불가");
+        }
+
     }
 
     void getPassenger(int passenger) {
@@ -35,7 +50,7 @@ class bus extends vehicle {
             this.condition = "운행불가";
             System.out.println("운행불가");
             System.out.printf("\t최대 승객 수 초과(%d)\n\n",this.passenger);
-        } else if (this.condition != "운행") {
+        } else if (this.condition == "운행불가" ||this.condition =="차고지행") {
             this.condition = "운행불가";
             System.out.println("운행불가");
             System.out.printf("\t주유량 부족(%d)\n\n",this.fuel);
@@ -134,17 +149,14 @@ class taxi extends vehicle {
 public class main {
     public static void main(String[] args) {
 
-        bus b = new bus(1000,100);
+        bus b = new bus(1234,100);
 
-        taxi t = new taxi(1111,100,"일반");
+//        taxi t = new taxi(1111,100,"일반");
 
 //        t.getPassenger(2, "대구",12);
         b.getStatus();
         b.getPassenger(2);
-        b.getStatus();
-        b.getFuel(-95);
-        b.getStatus();
-        b.getPassenger(5);
+        b.getSpeed(20);
 
     }
 }
