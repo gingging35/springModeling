@@ -1,1 +1,219 @@
+import com.sun.org.apache.xml.internal.serialize.EncodingInfo;
+
+import java.io.PrintWriter;
+
+class Bus extends Vehicle {
+    Vehicle exam = new Vehicle(30,"운행");
+    int max_Passenger = exam.getMax_Passenger();//최대 승객
+    int oil = exam.getOil();//주유량
+    String ch_state = exam.getCh_state();//상태 변경
+    int passenger;//현재 승객 변수
+    int fare = 1000;//버스 요금
+
+    void Bus(){
+        System.out.println("버스");
+    }
+    void on_Passenger(int passenger){//탑승 승객 메서드
+        this.passenger += passenger;
+        if(this.passenger > 30){
+            this.passenger -= passenger;
+            System.out.println("최대 승객 수 초과");
+            System.out.println("----------------------------------------");
+        }else {
+            System.out.println("탑승 승객 수 = "+passenger);
+            System.out.println("잔여 승객 수 = "+(max_Passenger-this.passenger));
+            System.out.println("요금 확인 = "+(fare*passenger));
+            System.out.println("----------------------------------------");
+        }
+
+    }
+    void change_Oil(int oil){//오일 충전 메서드
+        this.oil += oil;
+        if (this.oil>=10){
+            if(ch_state == "운행"){
+                System.out.println("주유량 "+ this.oil);
+                System.out.println("----------------------------------------");
+            }else {
+                System.out.println("차고지행");
+                System.out.println("주유량 "+ this.oil);
+                System.out.println("----------------------------------------");
+            }
+        }else {
+            System.out.println("주유 필요");
+            System.out.println("----------------------------------------");
+        }
+
+
+    }
+    void ch_State(String state){
+        exam.setCh_state(state);
+        ch_state = exam.getCh_state();
+    }
+
+
+}
+
+class Taxi extends Vehicle{
+    Vehicle vehicle = new Vehicle(4,"일반");
+    int max_Passenger = vehicle.max_Passenger;
+    int passenger;//현재 승객 변수
+    String ch_State = vehicle.ch_state;
+    int oil = vehicle.getOil();//주유량
+    String point;//목적지
+    int point_Street;//목적지 거리
+    int basics_Street = 1;//기본거리
+    int basics_Fare = 3000;//기본요금
+    int street_Fare = 1000;//거리당 요금
+    int total;
+    int speed = vehicle.getSpeed();
+
+    void Taxi(){
+        System.out.println("주유량 = " + oil);
+        System.out.println("상태 = " + vehicle.ch_state);
+        System.out.println("----------------------------------------");
+    }
+
+    void ch_Speed(int ch_speed){
+        vehicle.setSpeed(ch_speed);
+        System.out.println("현재 속도 = " + speed);
+        System.out.println("----------------------------------------");
+    }
+    void on_Passenger(int passenger,String point,int point_Street){//탑승 승객 메서드
+        this.passenger += passenger;
+        if(passenger > 4){
+            this.passenger -= passenger;
+            System.out.println("최대 승객 수 초과");
+            System.out.println("----------------------------------------");
+        }else {
+            if(vehicle.ch_state == "일반"){
+                this.point=point;
+                total += basics_Fare+street_Fare*point_Street;
+                vehicle.ch_state = "운행중";
+                System.out.println("탑승 승객 수 = "+passenger);
+                System.out.println("잔여 승객 수 = "+(max_Passenger-this.passenger));
+                System.out.println("기본 요금 확인 = " + basics_Fare);
+                System.out.println("목적지 = " + point);
+                System.out.println("목적지까지 거리 = "+point_Street+"Km");
+                System.out.println("지불할 요금 = "+(basics_Fare+street_Fare*point_Street));
+                System.out.println("상태 = " + vehicle.ch_state);
+                System.out.println("----------------------------------------");
+            }else{
+                System.out.println("탑승 불가 상태입니다.");
+            }
+        }
+    }
+
+    void change_Oil(int oil){//오일 충전 메서드
+        this.oil += oil;
+        if (this.oil>=10){
+            if(vehicle.ch_state == "운행중"){
+                System.out.println("주유량 "+ this.oil);
+                System.out.println("----------------------------------------");
+            }else {
+                System.out.println("차고지행");
+                System.out.println("주유량 "+ this.oil);
+                System.out.println("----------------------------------------");
+            }
+        }else {
+
+        }
+    }
+
+    void Payment(){//요금 결제
+        if (oil <= 0){//요금 결제 후 주유량이 없을 경우
+            vehicle.ch_state = "운행불가";
+            System.out.println("주유량 = "+ oil);
+            System.out.println("상태 = " + vehicle.ch_state);
+            System.out.println("누적 요금 = "+ total);
+            System.out.println("----------------------------------------");
+            this.passenger -= passenger;
+        }else {
+            System.out.println("주유량 = "+ oil);
+            System.out.println("누적 요금 = "+ total);
+            vehicle.ch_state = "일반";
+            System.out.println("----------------------------------------");
+            this.passenger -= passenger;
+        }
+    }
+
+}
+
+
+
+
+public class main {
+    public static void main(String[] args){
+        //ch_State 버스 운행 상태
+        //on_Passenger 승객 수
+        //change_Oil 주유량
+        Bus bus = new Bus();
+        bus.on_Passenger(25);
+        bus.change_Oil(10);
+        bus.on_Passenger(6);
+        bus.change_Oil(-60);
+        bus.change_Oil(-40);
+        bus.ch_State("차고지행");
+        bus.change_Oil(20);
+
+        Taxi taxi = new Taxi();
+        taxi.Taxi();
+        taxi.on_Passenger(2,"서울역",2);
+        taxi.ch_Speed(20);
+        taxi.change_Oil(-80);
+        taxi.Payment();
+        taxi.on_Passenger(3,"고담시티",10);
+        taxi.change_Oil(-20);
+        taxi.Payment();
+        taxi.on_Passenger(3,"신도림",3);
+    }
+}
+
+-------------------------------------------------------------------------------Vehicle
+
+public class Vehicle{
+    //private final int num;//고유번호
+    int oil;//주유량
+    int speed;//속도
+    int max_Passenger;//최대 승객
+    String ch_state;//상태 변경
+
+    Vehicle(){}
+    public Vehicle(int max_Passenger, String ch_state){
+        oil = 100;
+        speed = 0;
+        this.max_Passenger = max_Passenger;
+        this.ch_state = ch_state;
+    }
+
+    public int getOil() {
+        return oil;
+    }
+
+    public void setOil(int oil) {
+        this.oil += oil;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed += speed;
+    }
+    public int getMax_Passenger() {
+        return max_Passenger;
+    }
+
+    public void setMax_Passenger(int max_Passenger) {
+        this.max_Passenger = max_Passenger;
+    }
+
+    public String getCh_state() {
+        return ch_state;
+    }
+
+    public void setCh_state(String ch_state) {
+        this.ch_state = ch_state;
+    }
+}
 
